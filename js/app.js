@@ -1,4 +1,4 @@
-const galleryItems = [
+  const galleryItems = [
   {
     preview:
       'https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825__340.jpg',
@@ -64,22 +64,63 @@ const galleryItems = [
   },
 ];
 
+const galleryContainer = document.querySelector('.js-gallery');
+const lightboxImgEl = document.querySelector('div.lightbox');
+const lightboxImg = document.querySelector(".lightbox__image");
+const modal = document.querySelector('.js-lightbox');
+const overlay = document.querySelector('.lightbox__overlay');
+const closeBtn = document.querySelector('[data-action="close-lightbox"]');
+
+const imagesMarkup = createGallery(galleryItems);
+
+galleryContainer.insertAdjacentHTML('beforeend', imagesMarkup);
+
+galleryContainer.addEventListener('click', onGalleryClick);
+
+overlay.addEventListener('click', onCloseBtnlick);
+
+closeBtn.addEventListener('click', onCloseBtnlick);
+
 function createGallery(galleryItems) {
-  const markup = galleryItems.map(galleryItem => {
+  return galleryItems.map(({ preview, original, description }) => {
     return `
     <li class="gallery__item">
-  <a
-    class="gallery__link"
-    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-  >
-    <img
-      class="gallery__image"
-      src="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546__340.jpg"
-      data-source="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-      alt="Tulips"
-    />
-  </a>
-</li>
+      <a
+        class="gallery__link"
+        href="${original}"
+      >
+        <img
+          class="gallery__image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>
     `;
-  });
+  })
+    .join('');
+};
+
+function onGalleryClick(evt) {
+  evt.preventDefault();
+
+  const galleryItem = evt.target;
+  
+  if (galleryItem.nodeName !== 'IMG') {
+    return;
+  };
+  if (galleryItem.nodeName === 'IMG') {
+    lightboxImgEl.classList.add("is-open");
+    lightboxImg.src = galleryItem.dataset.source;
+    lightboxImg.alt = galleryItem.alt;
+  }
+};
+
+function onCloseBtnlick(evt) {
+  evt.preventDefault();
+  lightboxImgEl.classList.remove("is-open");
+  lightboxImgEl.src = '';
+  lightboxImgEl.alt = '';
+  window.removeEventListener("keyup", onCloseBtnlick);
 }
