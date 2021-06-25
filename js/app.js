@@ -81,6 +81,8 @@ overlay.addEventListener('click', onCloseBtnlick);
 
 closeBtn.addEventListener('click', onCloseBtnlick);
 
+document.addEventListener('keydown', onEscapePress);
+
 function createGallery(galleryItems) {
   return galleryItems.map(({ preview, original, description }) => {
     return `
@@ -122,5 +124,17 @@ function onCloseBtnlick(evt) {
   lightboxImgEl.classList.remove("is-open");
   lightboxImgEl.src = '';
   lightboxImgEl.alt = '';
-  window.removeEventListener("keyup", onCloseBtnlick);
-}
+  window.removeEventListener("click", onCloseBtnlick);
+};
+
+function onEscapePress(evt) {
+    if (evt.code !== "Escape") {
+    return;
+  };
+  if (evt.code === "Escape") {
+      lightboxImgEl.classList.remove("is-open");
+      lightboxImgEl.src = '';
+      lightboxImgEl.alt = '';
+      window.removeEventListener("keydown", onEscapePress);
+  };
+};
